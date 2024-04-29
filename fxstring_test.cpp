@@ -250,6 +250,15 @@ static void fxstring_unittest(void)
                     str2.resize(str1.max_size());
                 assert(str1.size() == str2.size());
                 assert(str1 == str2);
+
+                str1 = item1;
+                str2 = item1;
+                str1.insert(std::strlen(item1) / 2, item2);
+                str2.insert(std::strlen(item1) / 2, item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
             }
         }
     }
