@@ -11,7 +11,7 @@ static void fxstring_unittest(void)
 {
     static const char *testdata[] =
     {
-        "", "A", "xx", "123", "XxxxxX", "PAPPPPPPPPP"
+        "", "A", "xx", "123", "xxxxxX", "PAPPPPPPPPP"
     };
     {
         string_t<6> str("test1");
@@ -287,6 +287,66 @@ static void fxstring_unittest(void)
             str2.resize(str1.max_size());
         auto ich1 = str1.find_last_not_of('A', std::strlen(str1.c_str()) / 2);
         auto ich2 = str2.find_last_not_of('A', std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_of("xA");
+        auto ich2 = str2.find_first_of("xA");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_of("xA");
+        auto ich2 = str2.find_last_of("xA");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_first_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_last_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_not_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_first_not_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_not_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_last_not_of("xA", std::strlen(str1.c_str()) / 2);
         assert(ich1 == ich2);
     }
     {
