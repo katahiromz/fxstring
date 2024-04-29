@@ -11,14 +11,33 @@ void khmz::fxstring_unittest(void)
 {
     static const char *testdata[] =
     {
-        "", "A", "xx", "123", "XxxxxX", "PPPPPPPPPPP"
+        "", "A", "xx", "123", "XxxxxX", "PAPPPPPPPPP"
     };
+    {
+        string_t<6> str("test1");
+
+        assert(str.compare("test1") == 0);
+        assert(str.compare("test2") <  0);
+        assert(str.compare("test0") >  0);
+        assert(str.compare("test2") <= 0);
+        assert(str.compare("test0") >= 0);
+        assert(str.compare("test2") != 0);
+        assert(str.compare("test0") != 0);
+
+        assert(str == "test1");
+        assert(str <  "test2");
+        assert(str >  "test0");
+        assert(str <= "test2");
+        assert(str >= "test0");
+        assert(str != "test2");
+        assert(str != "test0");
+    }
     {
         string_t<3> str;
         assert(str.empty());
         assert(str.size() == 0);
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "") == 0);
+        assert(str ==  "");
         static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
     }
     for (auto& item : testdata)
@@ -34,6 +53,17 @@ void khmz::fxstring_unittest(void)
     {
         string_t<5> str1 = item;
         std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        assert(str1.size() == str2.size());
+        assert(str1 == str2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1;
+        std::string str2;
+        str1.assign(item);
+        str2.assign(item);
         if (str2.size() > str1.max_size())
             str2.resize(str1.max_size());
         assert(str1.size() == str2.size());
@@ -58,6 +88,66 @@ void khmz::fxstring_unittest(void)
             str2.resize(str1.max_size());
         assert(str1.size() == str2.size());
         assert(str1 == str2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find('A');
+        auto ich2 = str2.find('A');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find('x');
+        auto ich2 = str2.find('x');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind('x');
+        auto ich2 = str2.rfind('x');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind('x', str1.size());
+        auto ich2 = str2.rfind('x', str2.size());
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find("xx");
+        auto ich2 = str2.find("xx");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind("xx", str1.size());
+        auto ich2 = str2.rfind("xx", str2.size());
+        assert(ich1 == ich2);
     }
     {
         string_t<5> str1;
@@ -101,6 +191,15 @@ void khmz::fxstring_unittest(void)
                     str2.resize(str1.max_size());
                 assert(str1.size() == str2.size());
                 assert(str1 == str2);
+
+                str1 = item1;
+                str2 = item1;
+                str1.insert(str1.size(), item2);
+                str2.insert(str2.size(), item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
             }
         }
     }
@@ -109,39 +208,39 @@ void khmz::fxstring_unittest(void)
         assert(!str.empty());
         assert(str.size() == 2);
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str;
         str = { '1', '2' };
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str;
         str = { '1', '2', '3' };
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str("12");
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str("1234");
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str = "12";
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str = "1234";
         assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
     }
     {
         string_t<3> str;
@@ -181,25 +280,6 @@ void khmz::fxstring_unittest(void)
         str.clear();
         assert(str.empty());
         assert(str.size() == 0);
-    }
-    {
-        string_t<6> str("test1");
-
-        assert(str.compare("test1") == 0);
-        assert(str.compare("test2") <  0);
-        assert(str.compare("test0") >  0);
-        assert(str.compare("test2") <= 0);
-        assert(str.compare("test0") >= 0);
-        assert(str.compare("test2") != 0);
-        assert(str.compare("test0") != 0);
-
-        assert(str == "test1");
-        assert(str <  "test2");
-        assert(str >  "test0");
-        assert(str <= "test2");
-        assert(str >= "test0");
-        assert(str != "test2");
-        assert(str != "test0");
     }
     {
         string_t<5> str;
