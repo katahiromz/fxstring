@@ -7,7 +7,7 @@
 template <size_t t_buf_size>
 using string_t = khmz::fxstring<char, t_buf_size>;
 
-void khmz::fxstring_unittest(void)
+static void fxstring_unittest(void)
 {
     static const char *testdata[] =
     {
@@ -548,7 +548,7 @@ void khmz::fxstring_unittest(void)
 
 int main(void)
 {
-    khmz::fxstring_unittest();
+    fxstring_unittest();
     std::puts("success");
     return 0;
 }

@@ -1473,8 +1473,6 @@ namespace khmz
     {
         return str2.compare(str1) >= 0;
     }
-
-    void fxstring_unittest(void);
 } // namespace khmz
 
 namespace std
