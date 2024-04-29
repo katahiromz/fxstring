@@ -806,6 +806,7 @@ static void fxstring_unittest(void)
     fxstring_compare_tests();
     fxstring_assignment_tests();
     fxstring_find_tests();
+    fxstring_rfind_tests();
     fxstring_find_first_of_tests();
     fxstring_find_first_not_of_tests();
     fxstring_find_last_of_tests();
