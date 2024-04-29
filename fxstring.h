@@ -872,11 +872,7 @@ namespace khmz
         //
         // Resizing
         //
-        void resize(size_type count)
-        {
-            resize(count, value_type());
-        }
-        void resize(size_type count, value_type ch)
+        void resize(size_type count, value_type ch = value_type())
         {
             if (count > max_size())
                 count = max_size();
