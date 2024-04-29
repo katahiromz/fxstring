@@ -273,6 +273,12 @@ void khmz::fxstring_unittest(void)
         assert(str == "12");
     }
     {
+        string_t<3> str;
+        str.assign({ '1', '2', '3' });
+        assert(str.max_size() == 2);
+        assert(str == "12");
+    }
+    {
         string_t<3> str("12");
         assert(str.max_size() == 2);
         assert(str == "12");
