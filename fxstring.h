@@ -631,7 +631,7 @@ namespace khmz
         template <size_t t_buf_size_2>
         self_type& assign(const fxstring<T_CHAR, t_buf_size_2>& str)
         {
-            if (this == &str)
+            if (this == (void*)&str)
                 return *this;
             size_type count = str.size();
             if (count > max_size())

@@ -9,6 +9,10 @@ using string_t = khmz::fxstring<char, t_buf_size>;
 
 void khmz::fxstring_unittest(void)
 {
+    static const char *testdata[] =
+    {
+        "", "A", "xx", "123", "XxxxxX", "PPPPPPPPPPP"
+    };
     {
         string_t<3> str;
         assert(str.empty());
@@ -17,19 +21,88 @@ void khmz::fxstring_unittest(void)
         assert(strcmp(str.c_str(), "") == 0);
         static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
     }
+    for (auto& item : testdata)
     {
-        string_t<5> str(3, 'A');
-        assert(!str.empty());
-        assert(str.size() == 3);
-        assert(str.max_size() == 4);
-        assert(strcmp(str.c_str(), "AAA") == 0);
+        string_t<5> str1(item);
+        std::string str2(item);
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        assert(str1.size() == str2.size());
+        assert(str1 == str2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        assert(str1.size() == str2.size());
+        assert(str1 == str2);
+    }
+    for (auto& item : testdata)
+    {
+        std::string str = item;
+        string_t<5> str1 = str;
+        std::string str2 = str;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        assert(str1.size() == str2.size());
+        assert(str1 == str2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<10> str = item;
+        string_t<5> str1 = str;
+        std::string str2 = str.c_str();
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        assert(str1.size() == str2.size());
+        assert(str1 == str2);
     }
     {
-        string_t<3> str = { '1', '2' };
-        assert(!str.empty());
-        assert(str.size() == 2);
-        assert(str.max_size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        string_t<5> str1;
+        std::string str2;
+        for (auto& item1 : testdata)
+        {
+            for (auto& item2 : testdata)
+            {
+                str1 = item1;
+                str2 = item1;
+                str1 += item2;
+                str2 += item2;
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+
+                str1 = item1;
+                str2 = item1;
+                str1.append(item2);
+                str2.append(item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+            }
+        }
+    }
+    {
+        string_t<5> str1;
+        std::string str2;
+        for (auto& item1 : testdata)
+        {
+            for (auto& item2 : testdata)
+            {
+                str1 = item1;
+                str2 = item1;
+                str1.insert(0, item2);
+                str2.insert(0, item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+            }
+        }
     }
     {
         string_t<3> str = { '1', '2', '3' };
