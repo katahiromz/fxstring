@@ -7,12 +7,13 @@
 template <size_t t_buf_size>
 using string_t = khmz::fxstring<char, t_buf_size>;
 
-static void fxstring_unittest(void)
+static const char *testdata[] =
 {
-    static const char *testdata[] =
-    {
-        "", "A", "xx", "123", "xxxxxX", "PAPPPPPPPPP"
-    };
+    "", "A", "xx", "123", "xxxxxX", "PAPPPPPPPPP"
+};
+
+static void fxstring_compare_tests(void)
+{
     {
         string_t<6> str("test1");
 
@@ -82,14 +83,10 @@ static void fxstring_unittest(void)
         assert(str != string_t<8>("test11"));
         assert(str != string_t<8>("test"));
     }
-    {
-        string_t<3> str;
-        assert(str.empty());
-        assert(str.size() == 0);
-        assert(str.max_size() == 2);
-        assert(str ==  "");
-        static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
-    }
+}
+
+static void fxstring_assignment_tests(void)
+{
     for (auto& item : testdata)
     {
         string_t<5> str1(item);
@@ -139,319 +136,6 @@ static void fxstring_unittest(void)
         assert(str1.size() == str2.size());
         assert(str1 == str2);
     }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find('A');
-        auto ich2 = str2.find('A');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find('x');
-        auto ich2 = str2.find('x');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find('x', std::strlen(item) / 2);
-        auto ich2 = str2.find('x', std::strlen(item) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.rfind('x');
-        auto ich2 = str2.rfind('x');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.rfind('x', str1.size());
-        auto ich2 = str2.rfind('x', str2.size());
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find("xx");
-        auto ich2 = str2.find("xx");
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find("xx", std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find("xx", std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.rfind("xx", str1.size());
-        auto ich2 = str2.rfind("xx", str2.size());
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.rfind("xx", std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.rfind("xx", std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_of('A');
-        auto ich2 = str2.find_first_of('A');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_of('A');
-        auto ich2 = str2.find_last_of('A');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_not_of('A');
-        auto ich2 = str2.find_first_not_of('A');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_not_of('A');
-        auto ich2 = str2.find_last_not_of('A');
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_of('A', std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_first_of('A', std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_of('A', std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_last_of('A', std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_not_of('A', std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_first_not_of('A', std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_not_of('A', std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_last_not_of('A', std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_of("xA");
-        auto ich2 = str2.find_first_of("xA");
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_of("xA");
-        auto ich2 = str2.find_last_of("xA");
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_not_of("xA");
-        auto ich2 = str2.find_first_not_of("xA");
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_not_of("xA");
-        auto ich2 = str2.find_last_not_of("xA");
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_of("xA", std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_first_of("xA", std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_of("xA", std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_last_of("xA", std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_first_not_of("xA", std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_first_not_of("xA", std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    for (auto& item : testdata)
-    {
-        string_t<5> str1 = item;
-        std::string str2 = item;
-        if (str2.size() > str1.max_size())
-            str2.resize(str1.max_size());
-        auto ich1 = str1.find_last_not_of("xA", std::strlen(str1.c_str()) / 2);
-        auto ich2 = str2.find_last_not_of("xA", std::strlen(str1.c_str()) / 2);
-        assert(ich1 == ich2);
-    }
-    {
-        string_t<5> str1;
-        std::string str2;
-        for (auto& item1 : testdata)
-        {
-            for (auto& item2 : testdata)
-            {
-                str1 = item1;
-                str2 = item1;
-                str1 += item2;
-                str2 += item2;
-                if (str2.size() > str1.max_size())
-                    str2.resize(str1.max_size());
-                assert(str1.size() == str2.size());
-                assert(str1 == str2);
-
-                str1 = item1;
-                str2 = item1;
-                str1.append(item2);
-                str2.append(item2);
-                if (str2.size() > str1.max_size())
-                    str2.resize(str1.max_size());
-                assert(str1.size() == str2.size());
-                assert(str1 == str2);
-            }
-        }
-    }
-    {
-        string_t<5> str1;
-        std::string str2;
-        for (auto& item1 : testdata)
-        {
-            for (auto& item2 : testdata)
-            {
-                str1 = item1;
-                str2 = item1;
-                str1.insert(0, item2);
-                str2.insert(0, item2);
-                if (str2.size() > str1.max_size())
-                    str2.resize(str1.max_size());
-                assert(str1.size() == str2.size());
-                assert(str1 == str2);
-
-                str1 = item1;
-                str2 = item1;
-                str1.insert(str1.size(), item2);
-                str2.insert(str2.size(), item2);
-                if (str2.size() > str1.max_size())
-                    str2.resize(str1.max_size());
-                assert(str1.size() == str2.size());
-                assert(str1 == str2);
-
-                str1 = item1;
-                str2 = item1;
-                str1.insert(std::strlen(item1) / 2, item2);
-                str2.insert(std::strlen(item1) / 2, item2);
-                if (str2.size() > str1.max_size())
-                    str2.resize(str1.max_size());
-                assert(str1.size() == str2.size());
-                assert(str1 == str2);
-            }
-        }
-    }
     {
         string_t<3> str = { '1', '2', '3' };
         assert(!str.empty());
@@ -498,39 +182,21 @@ static void fxstring_unittest(void)
         assert(str == "12");
     }
     {
-        string_t<3> str;
-        assert(str.empty());
-        assert(str.size() == 0);
-        assert(str.max_size() == 2);
-
-        str = "1";
-        assert(!str.empty());
-        assert(str.size() == 1);
-
-        str = "1234";
-        assert(!str.empty());
-        assert(str.size() == 2);
-
-        str.clear();
-        assert(str.empty());
-        assert(str.size() == 0);
-    }
-    {
         string_t<4> str;
         assert(str.empty());
         assert(str.size() == 0);
         assert(str.max_size() == 3);
-        assert(strcmp(str.c_str(), "") == 0);
+        assert(str == "");
 
         str.assign("12");
         assert(!str.empty());
         assert(str.size() == 2);
-        assert(strcmp(str.c_str(), "12") == 0);
+        assert(str == "12");
 
         str.assign("1234");
         assert(!str.empty());
         assert(str.size() == 3);
-        assert(strcmp(str.c_str(), "123") == 0);
+        assert(str == "123");
 
         str.clear();
         assert(str.empty());
@@ -552,6 +218,24 @@ static void fxstring_unittest(void)
     }
     {
         string_t<3> str;
+        assert(str.empty());
+        assert(str.size() == 0);
+        assert(str.max_size() == 2);
+
+        str = "1";
+        assert(!str.empty());
+        assert(str.size() == 1);
+
+        str = "1234";
+        assert(!str.empty());
+        assert(str.size() == 2);
+
+        str.clear();
+        assert(str.empty());
+        assert(str.size() == 0);
+    }
+    {
+        string_t<3> str;
         str = { };
         assert(str == "");
         str = { 'A', 'B' };
@@ -564,16 +248,60 @@ static void fxstring_unittest(void)
         assert(str == "A");
         str += { 'B', 'C' };
         assert(str == "AB");
-        str.clear();
-        assert(str == "");
-        str.append("A");
-        assert(str == "A");
-        str.append('A');
-        assert(str == "AA");
-        str.pop_back();
-        assert(str == "A");
-        str.append({ 'B' });
-        assert(str == "AB");
+    }
+}
+
+static void fxstring_find_tests(void)
+{
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find('A');
+        auto ich2 = str2.find('A');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find('x');
+        auto ich2 = str2.find('x');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find('x', std::strlen(item) / 2);
+        auto ich2 = str2.find('x', std::strlen(item) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find("xx");
+        auto ich2 = str2.find("xx");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find("xx", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find("xx", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
     }
     {
         string_t<8> str = "ABABAC";
@@ -590,6 +318,50 @@ static void fxstring_unittest(void)
         assert(ich == 0);
         ich = str.find("AB", 1);
         assert(ich == 2);
+    }
+}
+
+static void fxstring_rfind_tests(void)
+{
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind('x');
+        auto ich2 = str2.rfind('x');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind('x', str1.size());
+        auto ich2 = str2.rfind('x', str2.size());
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind("xx", str1.size());
+        auto ich2 = str2.rfind("xx", str2.size());
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.rfind("xx", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.rfind("xx", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
     }
     {
         string_t<8> str = "ABABAC";
@@ -611,6 +383,50 @@ static void fxstring_unittest(void)
         ich = str.rfind("C", str.npos);
         assert(ich == 5);
     }
+}
+
+static void fxstring_find_first_of_tests(void)
+{
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_of('A');
+        auto ich2 = str2.find_first_of('A');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_of('A', std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_first_of('A', std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_of("xA");
+        auto ich2 = str2.find_first_of("xA");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_first_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
     {
         string_t<8> str = "ABCEAG";
         size_t ich;
@@ -627,6 +443,50 @@ static void fxstring_unittest(void)
         ich = str.find_first_of("ECF", 1);
         assert(ich == 2);
     }
+}
+
+static void fxstring_find_first_not_of_tests(void)
+{
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_not_of('A');
+        auto ich2 = str2.find_first_not_of('A');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_not_of('A', std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_first_not_of('A', std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_not_of("xA");
+        auto ich2 = str2.find_first_not_of("xA");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_first_not_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_first_not_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
     {
         string_t<8> str = "ABCEAG";
         size_t ich;
@@ -640,6 +500,94 @@ static void fxstring_unittest(void)
         assert(ich == 2);
         ich = str.find_first_not_of("ABCEAG");
         assert(ich == str.npos);
+    }
+}
+
+static void fxstring_find_last_of_tests(void)
+{
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_of('A');
+        auto ich2 = str2.find_last_of('A');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_of('A', std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_last_of('A', std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_of("xA");
+        auto ich2 = str2.find_last_of("xA");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_last_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+}
+
+static void fxstring_find_last_not_of_tests(void)
+{
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_not_of('A');
+        auto ich2 = str2.find_last_not_of('A');
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_not_of('A', std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_last_not_of('A', std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_not_of("xA");
+        auto ich2 = str2.find_last_not_of("xA");
+        assert(ich1 == ich2);
+    }
+    for (auto& item : testdata)
+    {
+        string_t<5> str1 = item;
+        std::string str2 = item;
+        if (str2.size() > str1.max_size())
+            str2.resize(str1.max_size());
+        auto ich1 = str1.find_last_not_of("xA", std::strlen(str1.c_str()) / 2);
+        auto ich2 = str2.find_last_not_of("xA", std::strlen(str1.c_str()) / 2);
+        assert(ich1 == ich2);
     }
     {
         string_t<8> str = "ABCEAG";
@@ -655,6 +603,119 @@ static void fxstring_unittest(void)
         ich = str.find_last_not_of("ABCEAG");
         assert(ich == str.npos);
     }
+}
+
+static void fxstring_appending_tests(void)
+{
+    {
+        string_t<5> str1;
+        std::string str2;
+        for (auto& item1 : testdata)
+        {
+            for (auto& item2 : testdata)
+            {
+                str1 = item1;
+                str2 = item1;
+                str1 += item2;
+                str2 += item2;
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+
+                str1 = item1;
+                str2 = item1;
+                str1.append(item2);
+                str2.append(item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+            }
+        }
+    }
+    {
+        string_t<3> str;
+        assert(str == "");
+        str.append("A");
+        assert(str == "A");
+        str.append('A');
+        assert(str == "AA");
+        str.pop_back();
+        assert(str == "A");
+        str.append({ 'B' });
+        assert(str == "AB");
+    }
+}
+
+static void fxstring_insertion_tests(void)
+{
+    {
+        string_t<5> str1;
+        std::string str2;
+        for (auto& item1 : testdata)
+        {
+            for (auto& item2 : testdata)
+            {
+                str1 = item1;
+                str2 = item1;
+                str1.insert(0, item2);
+                str2.insert(0, item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+
+                str1 = item1;
+                str2 = item1;
+                str1.insert(str1.size(), item2);
+                str2.insert(str2.size(), item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+
+                str1 = item1;
+                str2 = item1;
+                str1.insert(std::strlen(item1) / 2, item2);
+                str2.insert(std::strlen(item1) / 2, item2);
+                if (str2.size() > str1.max_size())
+                    str2.resize(str1.max_size());
+                assert(str1.size() == str2.size());
+                assert(str1 == str2);
+            }
+        }
+    }
+    {
+        string_t<8> str = "ABC";
+        str.insert(str.begin(), "D");
+        assert(str == "DABC");
+        str.insert(str.end(), "D");
+        assert(str == "DABCD");
+        str.insert(str.begin() + 1, "ABCDE");
+        assert(str == "DABCDEA");
+        str.clear();
+        str.insert(str.end(), "AB");
+        str.insert(str.begin() + 1, "AB");
+        assert(str == "AABB");
+        str.insert(str.end(), "ABCDEFG");
+        assert(str == "AABBABC");
+        str.clear();
+        str.insert(0, "ABC");
+        assert(str == "ABC");
+        str.insert(3, "abc");
+        assert(str == "ABCabc");
+        str.insert(5, "123");
+        assert(str == "ABCab12");
+        str.insert(3, 3, 'X');
+        assert(str == "ABCXXXa");
+        str.insert(3, 5, 'Y');
+        assert(str == "ABCYYYY");
+    }
+}
+
+static void fxstring_erase_tests(void)
+{
     {
         string_t<8> str = "ABCEAG";
         assert(str.erase(1, 3) == "AAG");
@@ -666,6 +727,10 @@ static void fxstring_unittest(void)
         str.erase(str.cbegin() + 1, str.cbegin() + 2);
         assert(str == "AGGGG");
     }
+}
+
+static void fxstring_iterator_tests(void)
+{
     {
         string_t<4> str = "ABC";
         size_t i = 0;
@@ -705,32 +770,10 @@ static void fxstring_unittest(void)
         string_t<8>::iterator it = str.begin();
         string_t<8>::const_iterator cit = it;
     }
-    {
-        string_t<8> str = "ABC";
-        str.insert(str.begin(), "D");
-        assert(str == "DABC");
-        str.insert(str.end(), "D");
-        assert(str == "DABCD");
-        str.insert(str.begin() + 1, "ABCDE");
-        assert(str == "DABCDEA");
-        str.clear();
-        str.insert(str.end(), "AB");
-        str.insert(str.begin() + 1, "AB");
-        assert(str == "AABB");
-        str.insert(str.end(), "ABCDEFG");
-        assert(str == "AABBABC");
-        str.clear();
-        str.insert(0, "ABC");
-        assert(str == "ABC");
-        str.insert(3, "abc");
-        assert(str == "ABCabc");
-        str.insert(5, "123");
-        assert(str == "ABCab12");
-        str.insert(3, 3, 'X');
-        assert(str == "ABCXXXa");
-        str.insert(3, 5, 'Y');
-        assert(str == "ABCYYYY");
-    }
+}
+
+static void fxstring_replacing_tests(void)
+{
     {
         string_t<4> str = "ABC";
         str.replace(0, 1, "Z");
@@ -743,6 +786,30 @@ static void fxstring_unittest(void)
         str.replace(1, 3, "");
         assert(str == "A");
     }
+}
+
+static void fxstring_unittest(void)
+{
+    {
+        string_t<3> str;
+        assert(str.empty());
+        assert(str.size() == 0);
+        assert(str.max_size() == 2);
+        assert(str ==  "");
+        static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
+    }
+    fxstring_compare_tests();
+    fxstring_assignment_tests();
+    fxstring_find_tests();
+    fxstring_find_first_of_tests();
+    fxstring_find_first_not_of_tests();
+    fxstring_find_last_of_tests();
+    fxstring_find_last_not_of_tests();
+    fxstring_appending_tests();
+    fxstring_insertion_tests();
+    fxstring_erase_tests();
+    fxstring_iterator_tests();
+    fxstring_replacing_tests();
 }
 
 int main(void)
