@@ -1018,7 +1018,7 @@ namespace khmz
                 return npos;
             for (size_type ich = pos; m_values[ich]; ++ich)
             {
-                if (m_values[ich] == ch)
+                if (traits_type::eq(m_values[ich], ch))
                     return ich;
             }
             return npos;
@@ -1030,7 +1030,7 @@ namespace khmz
                 return npos;
             for (size_type ich = pos; m_values[ich]; ++ich)
             {
-                if (m_values[ich] != ch)
+                if (!traits_type::eq(m_values[ich], ch))
                     return ich;
             }
             return npos;
@@ -1042,7 +1042,7 @@ namespace khmz
                 pos = size() - 1;
             while (pos != npos)
             {
-                if (m_values[pos] == ch)
+                if (traits_type::eq(m_values[pos], ch))
                     return pos;
                 --pos;
             }
@@ -1055,7 +1055,7 @@ namespace khmz
                 pos = size() - 1;
             while (pos != npos)
             {
-                if (m_values[pos] != ch)
+                if (!traits_type::eq(m_values[pos], ch))
                     break;
                 --pos;
             }
