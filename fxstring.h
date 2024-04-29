@@ -453,6 +453,7 @@ namespace khmz
 
     public:
         static constexpr size_type npos = -1;
+        static_assert(npos > 0, "npos must be positive.");
 
         //
         // Basic information
@@ -918,8 +919,7 @@ namespace khmz
             const size_type len = size();
             if (index >= len || count == 0)
                 return *this;
-            if (count == npos || index + count > len)
-                count = len - index;
+            count = khmz::detail::_min(count, len - index);
             size_type remaining_count = len - (index + count);
             traits_type::move(&m_values[index], &m_values[index + count], remaining_count);
             m_values[len - count] = 0;
