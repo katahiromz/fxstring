@@ -1,4 +1,4 @@
-# C++ fixed_string by katahiromz
+# `khmz::fxstring` by katahiromz
 
 This is a fixed-width string class for C++11.
 
