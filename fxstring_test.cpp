@@ -15,6 +15,7 @@ void khmz::fxstring_unittest(void)
         assert(str.size() == 0);
         assert(str.max_size() == 2);
         assert(strcmp(str.c_str(), "") == 0);
+        static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
     }
     {
         string_t<5> str(3, 'A');
