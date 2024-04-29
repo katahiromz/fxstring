@@ -33,6 +33,44 @@ void khmz::fxstring_unittest(void)
         assert(str != "test0");
     }
     {
+        string_t<6> str("test1");
+
+        assert(str.compare(std::string("test1")) == 0);
+        assert(str.compare(std::string("test2")) <  0);
+        assert(str.compare(std::string("test0")) >  0);
+        assert(str.compare(std::string("test2")) <= 0);
+        assert(str.compare(std::string("test0")) >= 0);
+        assert(str.compare(std::string("test2")) != 0);
+        assert(str.compare(std::string("test0")) != 0);
+
+        assert(str == std::string("test1"));
+        assert(str <  std::string("test2"));
+        assert(str >  std::string("test0"));
+        assert(str <= std::string("test2"));
+        assert(str >= std::string("test0"));
+        assert(str != std::string("test2"));
+        assert(str != std::string("test0"));
+    }
+    {
+        string_t<6> str("test1");
+
+        assert(str.compare(string_t<8>("test1")) == 0);
+        assert(str.compare(string_t<8>("test2")) <  0);
+        assert(str.compare(string_t<8>("test0")) >  0);
+        assert(str.compare(string_t<8>("test2")) <= 0);
+        assert(str.compare(string_t<8>("test0")) >= 0);
+        assert(str.compare(string_t<8>("test2")) != 0);
+        assert(str.compare(string_t<8>("test0")) != 0);
+
+        assert(str == string_t<8>("test1"));
+        assert(str <  string_t<8>("test2"));
+        assert(str >  string_t<8>("test0"));
+        assert(str <= string_t<8>("test2"));
+        assert(str >= string_t<8>("test0"));
+        assert(str != string_t<8>("test2"));
+        assert(str != string_t<8>("test0"));
+    }
+    {
         string_t<3> str;
         assert(str.empty());
         assert(str.size() == 0);
