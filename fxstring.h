@@ -1038,7 +1038,9 @@ namespace khmz
         size_type find_last_of(value_type ch, size_type pos = npos) const
         {
             assert(is_terminated());
-            if (empty() || pos == npos)
+            if (empty())
+                return npos;
+            if (pos == npos)
                 pos = size() - 1;
             while (pos != npos)
             {
@@ -1051,7 +1053,9 @@ namespace khmz
         size_type find_last_not_of(value_type ch, size_type pos = npos) const
         {
             assert(is_terminated());
-            if (empty() || pos == npos)
+            if (empty())
+                return npos;
+            if (pos == npos)
                 pos = size() - 1;
             while (pos != npos)
             {
@@ -1110,7 +1114,9 @@ namespace khmz
         size_type find_last_of(const value_type *str, size_type pos = npos) const
         {
             assert(is_terminated());
-            if (empty() || pos == npos)
+            if (empty())
+                return npos;
+            if (pos == npos)
                 pos = size() - 1;
             const size_type str_len = traits_type::length(str);
             while (pos != npos)
@@ -1132,7 +1138,9 @@ namespace khmz
         size_type find_last_not_of(const value_type *str, size_type pos = npos) const
         {
             assert(is_terminated());
-            if (empty() || pos == npos)
+            if (empty())
+                return npos;
+            if (pos == npos)
                 pos = size() - 1;
             const size_type str_len = traits_type::length(str);
             while (pos != npos)
