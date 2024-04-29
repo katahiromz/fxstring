@@ -620,8 +620,7 @@ namespace khmz
                 assert(0);
                 throw std::out_of_range("khmz::fxstring::assign");
             }
-            if (count == npos || pos + count > str.size())
-                count = str.size() - pos;
+            count = khmz::detail::_min(count, str.size() - pos);
             if (count > max_size())
                 count = max_size();
             traits_type::copy(data(), &str[pos], count);
@@ -649,8 +648,7 @@ namespace khmz
                 assert(0);
                 throw std::out_of_range("khmz::fxstring::assign");
             }
-            if (count == npos || pos + count > str.size())
-                count = str.size() - pos;
+            count = khmz::detail::_min(count, str.size() - pos);
             if (count > max_size())
                 count = max_size();
             traits_type::copy(data(), &str[pos], count);
@@ -788,8 +786,7 @@ namespace khmz
         template <size_t t_buf_size_2>
         self_type& append(const fxstring<T_CHAR, t_buf_size_2>& str, size_type pos, size_type count)
         {
-            if (count == npos || pos + count > str.size())
-                count = str.size() - pos;
+            count = khmz::detail::_min(count, str.size() - pos);
             return append(str.c_str() + pos, count);
         }
         template <size_t t_buf_size_2>
