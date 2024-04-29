@@ -1201,7 +1201,6 @@ namespace khmz
                 traits_type::assign(m_values[index++], *first++);
             return *this;
         }
-        template <typename InputIterator>
         self_type& insert(const_iterator pos, std::initializer_list<value_type> init)
         {
             return insert(pos, init.begin(), init.end());
