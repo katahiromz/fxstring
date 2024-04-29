@@ -891,10 +891,8 @@ namespace khmz
                 return;
             }
 
-            size_type ich;
-            for (ich = old_len; ich < count; ++ich)
-                traits_type::assign(m_values[ich], ch);
-            m_values[ich] = 0;
+            traits_type::assign(&m_values[old_len], count - old_len, ch);
+            m_values[count] = 0;
         }
 
         //
