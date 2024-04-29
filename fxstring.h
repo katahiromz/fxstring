@@ -807,7 +807,7 @@ namespace khmz
         }
         self_type& operator+=(const std::basic_string<T_CHAR>& str)
         {
-            return append(str);
+            return append(str.data(), str.size());
         }
         self_type& operator+=(std::initializer_list<value_type> init)
         {
