@@ -12,6 +12,18 @@ static const char *testdata[] =
     "", "A", "xx", "123", "xxxxxX", "PAPPPPPPPPP"
 };
 
+static void fxstring_init_tests(void)
+{
+    {
+        string_t<3> str;
+        assert(str.empty());
+        assert(str.size() == 0);
+        assert(str.max_size() == 2);
+        assert(str ==  "");
+        static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
+    }
+}
+
 static void fxstring_compare_tests(void)
 {
     {
@@ -790,14 +802,7 @@ static void fxstring_replacing_tests(void)
 
 static void fxstring_unittest(void)
 {
-    {
-        string_t<3> str;
-        assert(str.empty());
-        assert(str.size() == 0);
-        assert(str.max_size() == 2);
-        assert(str ==  "");
-        static_assert(sizeof(str) == 3 * sizeof(char), "The total size was wrong.");
-    }
+    fxstring_init_tests();
     fxstring_compare_tests();
     fxstring_assignment_tests();
     fxstring_find_tests();
