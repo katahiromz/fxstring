@@ -3,6 +3,8 @@
 
 #pragma once
 
+#define FXSTRING_VERSION 0x10000
+
 #include <string>           // For std::basic_string, std::string, std::wstring, ...
 #include <initializer_list> // For std::initializer_list
 #include <stdexcept>        // For std::out_of_range, ...
@@ -11,6 +13,7 @@
 #include <cstdio>           // For printf, ...
 #include <cstdarg>          // For va_list, va_start, va_end etc.
 #include <iterator>         // For std::iterator_traits
+#include <type_traits>      // For std::enable_if
 
 namespace khmz
 {
@@ -420,6 +423,23 @@ namespace khmz
     protected:
         values_type m_values;
 
+        template <typename T>
+        struct is_string_class_likely
+        {
+            typedef char yes;
+            typedef short no;
+
+            template <typename U>
+            static auto test(const U *p) ->
+                decltype(std::declval<U>().data(), std::declval<U>().size(), yes());
+
+            template <typename>
+            static auto test(...) -> no;
+
+            static constexpr bool value =
+                sizeof(decltype(test<T>(nullptr))) == sizeof(yes);
+        };
+
         size_type _length(const T_CHAR *str) const
         {
             size_type ich;
@@ -544,30 +564,21 @@ namespace khmz
         {
             assign(count, ch);
         }
-        fxstring(const std::basic_string<T_CHAR>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        fxstring(const T_STRING& str)
         {
-            assign(str);
+            assign(str.c_str(), str.size());
         }
-        fxstring(const std::basic_string<T_CHAR>& str, size_type pos)
-        {
-            assign(str, pos);
-        }
-        fxstring(const std::basic_string<T_CHAR>& str, size_type pos, size_type count)
-        {
-            assign(str, pos, count);
-        }
-        template <size_t t_buf_size_2>
-        fxstring(const fxstring<T_CHAR, t_buf_size_2>& str)
-        {
-            assign(str);
-        }
-        template <size_t t_buf_size_2>
-        fxstring(const fxstring<T_CHAR, t_buf_size_2>& str, size_type pos)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        fxstring(const T_STRING& str, size_type pos)
         {
             assign(str, pos);
         }
-        template <size_t t_buf_size_2>
-        fxstring(const fxstring<T_CHAR, t_buf_size_2>& str, size_type pos, size_type count)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        fxstring(const T_STRING& str, size_type pos, size_type count)
         {
             assign(str, pos, count);
         }
@@ -592,15 +603,12 @@ namespace khmz
         //
         // Assignments
         //
-        self_type& operator=(const std::basic_string<T_CHAR>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& operator=(const T_STRING& str)
         {
             assign(str);
             return *this;
-        }
-        template <size_t t_buf_size_2>
-        self_type& operator=(const fxstring<T_CHAR, t_buf_size_2>& str)
-        {
-            return assign(str);
         }
         self_type& operator=(const value_type *str)
         {
@@ -613,48 +621,6 @@ namespace khmz
         self_type& operator=(std::initializer_list<value_type> init)
         {
             return assign(init);
-        }
-        self_type& assign(const std::basic_string<T_CHAR>& str, size_type pos = 0, size_type count = npos)
-        {
-            if (pos > str.size())
-            {
-                assert(0);
-                throw std::out_of_range("khmz::fxstring::assign");
-            }
-            count = khmz::detail::_min(count, str.size() - pos);
-            if (count > max_size())
-                count = max_size();
-            traits_type::copy(data(), &str[pos], count);
-            m_values[count] = 0;
-            return *this;
-        }
-        template <size_t t_buf_size_2>
-        self_type& assign(const fxstring<T_CHAR, t_buf_size_2>& str)
-        {
-            if (this == (void*)&str)
-                return *this;
-            size_type count = str.size();
-            if (count > max_size())
-                count = max_size();
-            traits_type::copy(data(), str.c_str(), count);
-            m_values[count] = 0;
-            return *this;
-        }
-        template <size_t t_buf_size_2>
-        self_type& assign(const fxstring<T_CHAR, t_buf_size_2>& str, size_type pos, size_type count = npos)
-        {
-            assert(this != &str);
-            if (pos > str.size())
-            {
-                assert(0);
-                throw std::out_of_range("khmz::fxstring::assign");
-            }
-            count = khmz::detail::_min(count, str.size() - pos);
-            if (count > max_size())
-                count = max_size();
-            traits_type::copy(data(), &str[pos], count);
-            m_values[count] = 0;
-            return *this;
         }
         self_type& assign(size_type count, value_type ch)
         {
@@ -676,6 +642,14 @@ namespace khmz
             m_values[count] = 0;
             return *this;
         }
+        self_type& assign(const value_type *str, size_type pos, size_type count)
+        {
+            if (count > max_size())
+                count = max_size();
+            traits_type::copy(data(), &str[pos], count);
+            m_values[count] = 0;
+            return *this;
+        }
         template <typename InputIterator>
         self_type& assign(InputIterator first, InputIterator last)
         {
@@ -690,6 +664,22 @@ namespace khmz
         self_type& assign(std::initializer_list<value_type> init)
         {
             return assign(init.begin(), init.end());
+        }
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& assign(const T_STRING& str, size_type pos = 0, size_type count = npos)
+        {
+            if (pos > str.size())
+            {
+                assert(0);
+                throw std::out_of_range("khmz::fxstring::assign");
+            }
+            count = khmz::detail::_min(count, str.size() - pos);
+            if (count > max_size())
+                count = max_size();
+            traits_type::copy(data(), &str[pos], count);
+            m_values[count] = 0;
+            return *this;
         }
 
         //
@@ -752,7 +742,9 @@ namespace khmz
         {
             return append(&ch, 1);
         }
-        self_type& append(const std::basic_string<T_CHAR>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& append(const T_STRING& str)
         {
             return append(str.c_str(), str.size());
         }
@@ -769,13 +761,9 @@ namespace khmz
             self_type str(init);
             return append(str);
         }
-        template <size_t t_buf_size_2>
-        self_type& append(const fxstring<T_CHAR, t_buf_size_2>& str)
-        {
-            return append(str.c_str(), str.size());
-        }
-        template <size_t t_buf_size_2>
-        self_type& append(const fxstring<T_CHAR, t_buf_size_2>& str, size_type pos)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& append(const T_STRING& str, size_type pos)
         {
             if (pos > str.size())
             {
@@ -784,14 +772,16 @@ namespace khmz
             }
             return append(str.c_str() + pos, str.size() - pos);
         }
-        template <size_t t_buf_size_2>
-        self_type& append(const fxstring<T_CHAR, t_buf_size_2>& str, size_type pos, size_type count)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& append(const T_STRING& str, size_type pos, size_type count)
         {
             count = khmz::detail::_min(count, str.size() - pos);
             return append(str.c_str() + pos, count);
         }
-        template <size_t t_buf_size_2>
-        self_type& operator+=(const fxstring<T_CHAR, t_buf_size_2>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& operator+=(const T_STRING& str)
         {
             return append(str);
         }
@@ -803,10 +793,6 @@ namespace khmz
         {
             return append(str);
         }
-        self_type& operator+=(const std::basic_string<T_CHAR>& str)
-        {
-            return append(str.data(), str.size());
-        }
         self_type& operator+=(std::initializer_list<value_type> init)
         {
             return append(init);
@@ -815,12 +801,9 @@ namespace khmz
         //
         // Comparison
         //
-        template <size_t t_buf_size_2>
-        int compare(const fxstring<T_CHAR, t_buf_size_2>& str) const
-        {
-            return compare(str.c_str());
-        }
-        int compare(const std::basic_string<T_CHAR>& str) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        int compare(const T_STRING& str) const
         {
             return compare(str.c_str());
         }
@@ -962,11 +945,9 @@ namespace khmz
                 count -= found - ptr;
             }
         }
-        size_type find(const self_type& str, size_type pos = 0) const
-        {
-            return find(str.c_str(), pos);
-        }
-        size_type find(const std::basic_string<T_CHAR>& str, size_type pos = 0) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        size_type find(const T_STRING& str, size_type pos = 0) const
         {
             return find(str.c_str(), pos);
         }
@@ -988,11 +969,9 @@ namespace khmz
             }
             return pos;
         }
-        size_type rfind(const self_type& str, size_type pos = 0) const
-        {
-            return rfind(str.c_str(), pos);
-        }
-        size_type rfind(const std::basic_string<T_CHAR>& str, size_type pos = 0) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        size_type rfind(const T_STRING& str, size_type pos = 0) const
         {
             return rfind(str.c_str(), pos);
         }
@@ -1071,11 +1050,9 @@ namespace khmz
             }
             return npos;
         }
-        size_type find_first_of(const self_type& str, size_type pos = 0) const
-        {
-            return find_first_of(str.c_str(), pos);
-        }
-        size_type find_first_of(const std::basic_string<T_CHAR>& str, size_type pos = 0) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        size_type find_first_of(const T_STRING& str, size_type pos = 0) const
         {
             return find_first_of(str.c_str(), pos);
         }
@@ -1092,11 +1069,9 @@ namespace khmz
             }
             return npos;
         }
-        size_type find_first_not_of(const self_type& str, size_type pos = 0) const
-        {
-            return find_first_not_of(str.c_str(), pos);
-        }
-        size_type find_first_not_of(const std::basic_string<T_CHAR>& str, size_type pos = 0) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        size_type find_first_not_of(const T_STRING& str, size_type pos = 0) const
         {
             return find_first_not_of(str.c_str(), pos);
         }
@@ -1116,11 +1091,9 @@ namespace khmz
             }
             return pos;
         }
-        size_type find_last_of(const self_type& str, size_type pos = npos) const
-        {
-            return find_last_of(str.c_str(), pos);
-        }
-        size_type find_last_of(const std::basic_string<T_CHAR>& str, size_type pos = npos) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        size_type find_last_of(const T_STRING& str, size_type pos = npos) const
         {
             return find_last_of(str.c_str(), pos);
         }
@@ -1140,11 +1113,9 @@ namespace khmz
             }
             return pos;
         }
-        size_type find_last_not_of(const self_type& str, size_type pos = npos) const
-        {
-            return find_last_not_of(str.c_str(), pos);
-        }
-        size_type find_last_not_of(const std::basic_string<T_CHAR>& str, size_type pos = npos) const
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        size_type find_last_not_of(const T_STRING& str, size_type pos = npos) const
         {
             return find_last_not_of(str.c_str(), pos);
         }
@@ -1168,7 +1139,9 @@ namespace khmz
             traits_type::assign(&m_values[index], count, ch);
             return *this;
         }
-        self_type& insert(size_type pos, const std::basic_string<T_CHAR>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& insert(size_type pos, const T_STRING& str)
         {
             return insert(pos, str.c_str(), str.size());
         }
@@ -1222,21 +1195,15 @@ namespace khmz
         {
             return replace(first - cbegin(), last - first, str);
         }
-        self_type& replace(size_type index, size_type count, const std::basic_string<T_CHAR>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& replace(size_type index, size_type count, const T_STRING& str)
         {
             return replace(index, count, str.c_str());
         }
-        self_type& replace(const_iterator first, const_iterator last, const std::basic_string<T_CHAR>& str)
-        {
-            return replace(first, last, str.c_str());
-        }
-        template <size_t t_buf_size_2>
-        self_type& replace(size_type index, size_type count, const fxstring<T_CHAR, t_buf_size_2>& str)
-        {
-            return replace(index, count, str.c_str());
-        }
-        template <size_t t_buf_size_2>
-        self_type& replace(const_iterator first, const_iterator last, const fxstring<T_CHAR, t_buf_size_2>& str)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        self_type& replace(const_iterator first, const_iterator last, const T_STRING& str)
         {
             return replace(first, last, str.c_str());
         }
@@ -1252,15 +1219,9 @@ namespace khmz
             va_end(va);
             return len;
         }
-        int printf(const self_type& format, ...)
-        {
-            va_list va;
-            va_start(va, format);
-            int len = vprintf(format.c_str(), va);
-            va_end(va);
-            return len;
-        }
-        int printf(const std::basic_string<T_CHAR>& format, ...)
+        template <typename T_STRING,
+                  typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
+        int printf(const T_STRING& format, ...)
         {
             va_list va;
             va_start(va, format);
