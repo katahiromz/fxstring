@@ -568,7 +568,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         fxstring(const T_STRING& str)
         {
-            assign(str.c_str(), str.size());
+            assign(str.data(), str.size());
         }
         template <typename T_STRING,
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
@@ -746,7 +746,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         self_type& append(const T_STRING& str)
         {
-            return append(str.c_str(), str.size());
+            return append(str.data(), str.size());
         }
         template <typename InputIterator>
         self_type& append(InputIterator first, InputIterator last)
@@ -770,14 +770,14 @@ namespace khmz
                 assert(0);
                 throw std::out_of_range("khmz::fxstring::append");
             }
-            return append(str.c_str() + pos, str.size() - pos);
+            return append(str.data() + pos, str.size() - pos);
         }
         template <typename T_STRING,
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         self_type& append(const T_STRING& str, size_type pos, size_type count)
         {
             count = khmz::detail::_min(count, str.size() - pos);
-            return append(str.c_str() + pos, count);
+            return append(str.data() + pos, count);
         }
         template <typename T_STRING,
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
@@ -805,7 +805,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         int compare(const T_STRING& str) const
         {
-            return compare(str.c_str());
+            return compare(str.data());
         }
         int compare(const value_type *str) const
         {
@@ -949,7 +949,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         size_type find(const T_STRING& str, size_type pos = 0) const
         {
-            return find(str.c_str(), pos);
+            return find(str.data(), pos);
         }
         size_type rfind(const value_type *str, size_type pos = npos) const
         {
@@ -973,7 +973,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         size_type rfind(const T_STRING& str, size_type pos = 0) const
         {
-            return rfind(str.c_str(), pos);
+            return rfind(str.data(), pos);
         }
 
         //
@@ -1054,7 +1054,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         size_type find_first_of(const T_STRING& str, size_type pos = 0) const
         {
-            return find_first_of(str.c_str(), pos);
+            return find_first_of(str.data(), pos);
         }
         size_type find_first_not_of(const value_type *str, size_type pos = 0) const
         {
@@ -1073,7 +1073,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         size_type find_first_not_of(const T_STRING& str, size_type pos = 0) const
         {
-            return find_first_not_of(str.c_str(), pos);
+            return find_first_not_of(str.data(), pos);
         }
         size_type find_last_of(const value_type *str, size_type pos = npos) const
         {
@@ -1095,7 +1095,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         size_type find_last_of(const T_STRING& str, size_type pos = npos) const
         {
-            return find_last_of(str.c_str(), pos);
+            return find_last_of(str.data(), pos);
         }
         size_type find_last_not_of(const value_type *str, size_type pos = npos) const
         {
@@ -1117,7 +1117,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         size_type find_last_not_of(const T_STRING& str, size_type pos = npos) const
         {
-            return find_last_not_of(str.c_str(), pos);
+            return find_last_not_of(str.data(), pos);
         }
 
         //
@@ -1143,7 +1143,7 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         self_type& insert(size_type pos, const T_STRING& str)
         {
-            return insert(pos, str.c_str(), str.size());
+            return insert(pos, str.data(), str.size());
         }
         self_type& insert(const_iterator pos, value_type ch)
         {
@@ -1199,13 +1199,13 @@ namespace khmz
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         self_type& replace(size_type index, size_type count, const T_STRING& str)
         {
-            return replace(index, count, str.c_str());
+            return replace(index, count, str.data());
         }
         template <typename T_STRING,
                   typename = typename std::enable_if<is_string_class_likely<T_STRING>::value>::type>
         self_type& replace(const_iterator first, const_iterator last, const T_STRING& str)
         {
-            return replace(first, last, str.c_str());
+            return replace(first, last, str.data());
         }
 
         //
@@ -1225,7 +1225,7 @@ namespace khmz
         {
             va_list va;
             va_start(va, format);
-            int len = vprintf(format.c_str(), va);
+            int len = vprintf(format.data(), va);
             va_end(va);
             return len;
         }
