@@ -436,8 +436,7 @@ namespace khmz
             template <typename>
             static auto test(...) -> no;
 
-            static constexpr bool value =
-                sizeof(decltype(test<T>(nullptr))) == sizeof(yes);
+            static constexpr bool value = sizeof(decltype(test<T>(nullptr))) == sizeof(yes);
         };
 
         size_type _length(const T_CHAR *str) const
@@ -537,7 +536,7 @@ namespace khmz
         // Iterator
         //
               iterator begin()        { return       iterator(data()); }
-        const_iterator begin()  const { return const_iterator(c_str()); }
+        const_iterator begin()  const { return const_iterator(data()); }
               iterator end()          { return       iterator(&m_values[size()]); }
         const_iterator end()    const { return const_iterator(&m_values[size()]); }
         const_iterator cbegin() const { return begin(); }
